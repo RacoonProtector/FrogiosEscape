@@ -6,20 +6,39 @@ using UnityEngine.AI;
 public class ClickMovement : MonoBehaviour
 {
     public NavMeshAgent agent;
-       public GameObject targetDest;
-       void Start()
-       {
-          agent = GetComponent<NavMeshAgent>();
-       }
-       void Update()
-       {
-          if (!Input.GetMouseButtonDown(0)) return;
-          RaycastHit hit;
-          Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-          if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-          {
-             targetDest.transform.position = hit.point;
-             agent.SetDestination(hit.point);
-          }
-       }
+
+    public Animator playerAnimation;
+    public bool IsRunning;
+
+    public Camera playerCamera;
+      
+    public GameObject targetDest;
+    void Start()
+    {
+        
+    }
+    void Update()
+    {
+        if (Input.GetMouseButton(0))
+        {
+            Ray myRay = playerCamera.ScreenPointToRay(Input.mousePosition);
+            RaycastHit myRaycastHit;
+
+            if (Physics.Raycast(myRay, out myRaycastHit))
+            {
+                agent.SetDestination(myRaycastHit.point);
+            }
+        }
+
+        if (agent.remainingDistance <= agent.stoppingDistance)
+        {
+            IsRunning = false;
+        }
+        else
+        {
+            IsRunning = true;
+        }
+
+        playerAnimation.SetBool("IsRunning", IsRunning);
+    }
 }
